@@ -180,6 +180,9 @@ export function readTokenProps({ ctx, token }){
 }
 
 export function writeTokenProps({ ctx, token, props, source }){
+	if(Object.keys(props).length === 0)
+		return
+
 	ctx.db.core.tx(() => {
 		for(let [key, value] of Object.entries(props)){
 			if(value == null){
