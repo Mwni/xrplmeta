@@ -2,6 +2,7 @@ import { expect } from 'chai'
 import { createContext } from './env.js'
 import { diffAccountsProps, diffTokensProps } from '../../src/db/helpers/props.js'
 import { reduceProps } from '../../src/srv/procedures/token.js'
+import { updateCacheForTokenProps } from '../../src/cache/tokens.js'
 
 
 const ctx = await createContext()
@@ -147,9 +148,15 @@ describe(
 		it(
 			'should have the correct token prop cache',
 			() => {
+				for(let { currency, issuer } of tokens){
+					updateCacheForTokenProps({ 
+						ctx, 
+						token: { currency, issuer } 
+					})
+				}
+
 				let props = ctx.db.cache.tokens.readMany()
 					.map(cache => reduceProps({ props: cache.tokenProps }))
-
 
 				expect(props).to.be.deep.equal(
 					tokens
