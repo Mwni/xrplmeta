@@ -64,3 +64,8 @@ export async function startServer({ ctx }){
 		koa.on('close', resolve)
 	})
 }
+
+console.errorOrg = console.error
+console.error = text => /.*Error: (write|read) ECONN.*/g.test(text)
+	? undefined
+	: console.errorOrg(text)
