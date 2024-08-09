@@ -141,7 +141,7 @@ export async function updateIconCacheFor({ ctx, token, account }){
 		.filter((url, i, urls) => urls.indexOf(url) === i)
 
 	let removedUsing = using
-		.filter(use => !previouslyUsedUrls.includes(use.icon.url))
+		.filter(use => !urls.includes(use.icon.url))
 
 	let removedUrls = previouslyUsedUrls
 		.filter(url => !urls.includes(url))
