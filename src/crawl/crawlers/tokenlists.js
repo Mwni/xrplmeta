@@ -3,7 +3,7 @@ import { parse as parseXLS26 } from '@xrplkit/xls26'
 import { scheduleGlobal } from '../schedule.js'
 import { createFetch } from '../../lib/fetch.js'
 import { diffAccountsProps, diffTokensProps } from '../../db/helpers/props.js'
-import { encodeCurrencyCode } from '@xrplkit/amount'
+import { currencyUTF8ToHex } from '@xrplkit/tokens'
 
 
 export default async function({ ctx }){
@@ -72,7 +72,7 @@ async function crawlList({ ctx, id, url, fetchInterval = 600, trustLevel = 0, ig
 						props.trust_level = Math.min(props.trust_level, trustLevel)
 
 					tokens.push({
-						currency: encodeCurrencyCode(currency),
+						currency: currencyUTF8ToHex(currency),
 						issuer: {
 							address: issuer
 						},

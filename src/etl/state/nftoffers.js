@@ -1,5 +1,5 @@
 import { encodeAccountID } from 'ripple-address-codec'
-import { fromRippled } from '@xrplkit/amount'
+import { amountFromRippled } from '@xrplkit/tokens'
 import { rippleToUnix } from '@xrplkit/time'
 import { expireNFTokenOffer, writeNFTokenOffer } from '../../db/helpers/nftoffers.js'
 
@@ -15,7 +15,7 @@ export function parse({ index, entry }){
 
 		
 	if(entry.Amount){
-		let { currency, issuer, value } = fromRippled(entry.Amount)
+		let { currency, issuer, value } = amountFromRippled(entry.Amount)
 
 		amountValue = value
 		amountToken = currency === 'XRP'

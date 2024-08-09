@@ -5,7 +5,7 @@ import { sanitize as sanitizeURL } from '../../lib/url.js'
 import { scheduleIterator } from '../schedule.js'
 import { createFetch } from '../../lib/fetch.js'
 import { clearAccountProps, clearTokenProps, readAccountProps, writeAccountProps, writeTokenProps } from '../../db/helpers/props.js'
-import { encodeCurrencyCode } from '@xrplkit/amount'
+import { currencyUTF8ToHex } from '@xrplkit/tokens'
 import { reduceProps } from '../../srv/procedures/token.js'
 
 
@@ -118,7 +118,7 @@ export default async function({ ctx }){
 						writeTokenProps({
 							ctx,
 							token: {
-								currency: encodeCurrencyCode(currency),
+								currency: currencyUTF8ToHex(currency),
 								issuer: {
 									address: issuer
 								}

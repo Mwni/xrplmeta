@@ -1,4 +1,4 @@
-import { isSameCurrency } from '@xrplkit/amount'
+import { isSameToken } from '@xrplkit/tokens'
 import { readTokenMetrics } from './tokenmetrics.js'
 import { 
 	markCacheDirtyForAccountIcons, 
@@ -55,7 +55,7 @@ export function diffTokensProps({ ctx, tokens, source }){
 		.map(({ token }) => token)
 		.filter(
 			(token, index, tokens) => index === tokens.findIndex(
-				({ currency, issuer }) => isSameCurrency(token, { currency, issuer })
+				({ currency, issuer }) => isSameToken(token, { currency, issuer })
 			)
 		)
 	

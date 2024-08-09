@@ -1,12 +1,12 @@
 import { XFL } from '@xrplkit/xfl'
-import { fromRippled as fromRippledAmount } from '@xrplkit/amount'
+import { amountFromRippled } from '@xrplkit/tokens'
 import { rippleToUnix } from '@xrplkit/time'
 import { writeTokenOffer, expireTokenOffer } from '../../db/helpers/tokenoffers.js'
 
 
 export function parse({ entry }){
-	let takerPays = fromRippledAmount(entry.TakerPays)
-	let takerGets = fromRippledAmount(entry.TakerGets)
+	let takerPays = amountFromRippled(entry.TakerPays)
+	let takerGets = amountFromRippled(entry.TakerGets)
 	let size = takerGets.value
 	let qualityHex = entry.BookDirectory.slice(-16)
 

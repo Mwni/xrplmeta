@@ -1,4 +1,4 @@
-import { decodeCurrencyCode, isSameCurrency } from '@xrplkit/amount'
+import { isSameToken } from '@xrplkit/tokens'
 import { readTokenExchangeIntervalSeries, readTokenExchangesAligned } from '../../db/helpers/tokenexchanges.js'
 import { readTokenMetricIntervalSeries } from '../../db/helpers/tokenmetrics.js'
 import { sanitize as sanitizeUrl } from '../../lib/url.js'
@@ -206,7 +206,7 @@ export function serveTokenSeries(){
 
 export function serveTokenExchanges(){
 	return ({ ctx, base, quote, sequence, limit, newestFirst }) => {
-		if(isSameCurrency(base, quote)){
+		if(isSameToken(base, quote)){
 			throw {
 				type: `invalidParam`,
 				message: `The base and quote asset can not be the same.`,
