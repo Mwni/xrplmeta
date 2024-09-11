@@ -5,7 +5,20 @@ import { sanitize as sanitizeUrl } from '../../lib/url.js'
 
 
 export function serveTokenList(){
-	return ({ ctx, sort_by, name_like, trust_levels, decode_currency, prefer_sources, include_sources, include_changes, original_icons, expand_meta, limit, offset }) => {
+	return ({
+		ctx,
+		sort_by,
+		name_like,
+		trust_levels,
+		decode_currency,
+		prefer_sources,
+		include_sources,
+		include_changes,
+		original_icons,
+		expand_meta,
+		limit,
+		offset
+	}) => {
 		let tokens = []
 		let where = {}
 
@@ -64,7 +77,15 @@ export function serveTokenList(){
 }
 
 export function subscribeTokenList(){
-	return ({ ctx, tokens, decode_currency, prefer_sources, include_sources, include_changes, expand_meta }) => {
+	return ({
+		ctx,
+		tokens,
+		decode_currency,
+		prefer_sources,
+		include_sources,
+		include_changes,
+		expand_meta
+	}) => {
 		for(let token of tokens){
 			ctx.client.tokenSubscriptions[token.id] = {
 				token: {
@@ -101,7 +122,16 @@ export function unsubscribeTokenList(){
 }
 
 export function serveTokenSummary(){
-	return ({ ctx, token, decode_currency, prefer_sources, include_sources, include_changes, expand_meta, original_icons }) => {
+	return ({
+		ctx,
+		token,
+		decode_currency,
+		prefer_sources,
+		include_sources,
+		include_changes,
+		expand_meta,
+		original_icons
+	}) => {
 		let cache = ctx.db.cache.tokens.readOne({
 			where: {
 				token: token.id
@@ -245,7 +275,15 @@ export function serveTokenExchanges(){
 }
 
 
-export function formatTokenCache({ ctx, cache, decodeCurrency, preferSources, expandMeta, includeChanges, originalIcons }){
+export function formatTokenCache({
+	ctx,
+	cache,
+	decodeCurrency,
+	preferSources,
+	expandMeta,
+	includeChanges,
+	originalIcons
+}){
 	if(!originalIcons){
 		cache = applyIconCaches({ ctx, cache })
 	}
