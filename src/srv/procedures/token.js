@@ -5,7 +5,7 @@ import { sanitize as sanitizeUrl } from '../../lib/url.js'
 
 
 export function serveTokenList(){
-	return ({ ctx, sort_by, name_like, trust_levels, decode_currency, prefer_sources, expand_meta, include_changes, original_icons, limit, offset }) => {
+	return ({ ctx, sort_by, name_like, trust_levels, decode_currency, prefer_sources, include_sources, include_changes, original_icons, expand_meta, limit, offset }) => {
 		let tokens = []
 		let where = {}
 
@@ -49,7 +49,7 @@ export function serveTokenList(){
 					cache,
 					decodeCurrency: decode_currency,
 					preferSources: prefer_sources,
-					expandMeta: expand_meta,
+					expandMeta: include_sources || expand_meta,
 					includeChanges: include_changes,
 					originalIcons: original_icons
 				})
@@ -64,7 +64,7 @@ export function serveTokenList(){
 }
 
 export function subscribeTokenList(){
-	return ({ ctx, tokens, decode_currency, prefer_sources, expand_meta, include_changes }) => {
+	return ({ ctx, tokens, decode_currency, prefer_sources, include_sources, include_changes, expand_meta }) => {
 		for(let token of tokens){
 			ctx.client.tokenSubscriptions[token.id] = {
 				token: {
@@ -73,7 +73,7 @@ export function subscribeTokenList(){
 				},
 				decode_currency,
 				prefer_sources,
-				expand_meta,
+				include_sources: include_sources || expand_meta,
 				include_changes
 			}
 		}
@@ -101,7 +101,7 @@ export function unsubscribeTokenList(){
 }
 
 export function serveTokenSummary(){
-	return ({ ctx, token, decode_currency, prefer_sources, expand_meta, include_changes, original_icons }) => {
+	return ({ ctx, token, decode_currency, prefer_sources, include_sources, include_changes, expand_meta, original_icons }) => {
 		let cache = ctx.db.cache.tokens.readOne({
 			where: {
 				token: token.id
@@ -118,7 +118,7 @@ export function serveTokenSummary(){
 			cache,
 			decodeCurrency: decode_currency,
 			preferSources: prefer_sources,
-			expandMeta: expand_meta,
+			expandMeta: include_sources || expand_meta,
 			includeChanges: include_changes,
 			originalIcons: original_icons
 		})

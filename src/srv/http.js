@@ -45,6 +45,7 @@ export function createRouter({ ctx }){
 				args: {
 					...svc.query,
 					expand_meta: svc.query.expand_meta !== undefined,
+					include_sources: svc.query.include_sources !== undefined,
 					include_changes: svc.query.include_changes !== undefined,
 					decode_currency: svc.query.decode_currency !== undefined,
 					original_icons: svc.query.original_icons !== undefined,
@@ -87,6 +88,7 @@ export function createRouter({ ctx }){
 				args: {
 					token: parseTokenURI(svc.params.token),
 					expand_meta: svc.query.expand_meta !== undefined,
+					include_sources: svc.query.include_sources !== undefined,
 					include_changes: svc.query.include_changes !== undefined,
 					decode_currency: svc.query.decode_currency !== undefined,
 					original_icons: svc.query.original_icons !== undefined,
