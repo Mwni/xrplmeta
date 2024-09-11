@@ -1,7 +1,7 @@
 import log from '@mwni/log'
 import { spawn } from '@mwni/workers'
 import { openDB } from '../db/index.js'
-import { startCrawlers } from '../crawl/crawl.js'
+import { startCrawlers } from '../crawl/init.js'
 
 
 export async function run({ ctx }){
