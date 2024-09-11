@@ -4,7 +4,7 @@ import { readTokenMetricSeries, readTokenMetrics, writeTokenMetrics } from '../.
 import { readTokenExchangeAligned, alignTokenExchange } from '../../db/helpers/tokenexchanges.js'
 
 
-export function updateMarketcapByExchange({ ctx, exchange }){
+export function updateMarketcapFromExchange({ ctx, exchange }){
 	try{
 		exchange = alignTokenExchange({
 			exchange,
@@ -73,7 +73,7 @@ export function updateMarketcapByExchange({ ctx, exchange }){
 	}
 }
 
-export function updateMarketcapBySupply({ ctx, supply }){
+export function updateMarketcapFromSupply({ ctx, supply }){
 	let exchange = readTokenExchangeAligned({
 		ctx,
 		base: supply.token,
