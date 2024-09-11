@@ -15,9 +15,9 @@ const configPath = args.config
 	: findConfig()
 
 	
-log.config({ severity: args.log || 'info' })
-log.info(`*** XRPLMETA NODE ${version} ***`)
-log.info(`using config at "${configPath}"`)
+log.config({ level: args.log || 'info', root: '.' })
+	.info(`*** XRPLMETA NODE ${version} ***`)
+	.info(`using config at "${configPath}"`)
 
 
 const baseConfig = loadConfig(configPath, true)
