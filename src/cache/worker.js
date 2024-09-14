@@ -32,82 +32,86 @@ export async function startMetaCacheWorker({ ctx }){
 				continue
 			}
 
-			switch(todo.task){
-				case 'account.props': {
-					updateCacheForAccountProps({ 
-						ctx, 
-						account: {
-							id: todo.subject 
-						}
-					})
-					break
+			try{
+				switch(todo.task){
+					case 'account.props': {
+						updateCacheForAccountProps({ 
+							ctx, 
+							account: {
+								id: todo.subject 
+							}
+						})
+						break
+					}
+					case 'token.props': {
+						updateCacheForTokenProps({ 
+							ctx, 
+							token: {
+								id: todo.subject 
+							}
+						})
+						break
+					}
+					case 'token.exchanges': {
+						updateCacheForTokenExchanges({ 
+							ctx, 
+							token: {
+								id: todo.subject 
+							}
+						})
+						break
+					}
+					case 'token.metrics.trustlines': {
+						updateCacheForTokenMetrics({ 
+							ctx, 
+							token: {
+								id: todo.subject 
+							},
+							metrics: {
+								trustlines: true
+							}
+						})
+						break
+					}
+					case 'token.metrics.holders': {
+						updateCacheForTokenMetrics({ 
+							ctx, 
+							token: {
+								id: todo.subject 
+							},
+							metrics: {
+								holders: true
+							}
+						})
+						break
+					}
+					case 'token.metrics.supply': {
+						updateCacheForTokenMetrics({ 
+							ctx, 
+							token: {
+								id: todo.subject 
+							},
+							metrics: {
+								supply: true
+							}
+						})
+						break
+					}
+					case 'token.metrics.marketcap': {
+						updateCacheForTokenMetrics({ 
+							ctx, 
+							token: {
+								id: todo.subject 
+							},
+							metrics: {
+								marketcap: true
+							}
+						})
+						break
+					}
 				}
-				case 'token.props': {
-					updateCacheForTokenProps({ 
-						ctx, 
-						token: {
-							id: todo.subject 
-						}
-					})
-					break
-				}
-				case 'token.exchanges': {
-					updateCacheForTokenExchanges({ 
-						ctx, 
-						token: {
-							id: todo.subject 
-						}
-					})
-					break
-				}
-				case 'token.metrics.trustlines': {
-					updateCacheForTokenMetrics({ 
-						ctx, 
-						token: {
-							id: todo.subject 
-						},
-						metrics: {
-							trustlines: true
-						}
-					})
-					break
-				}
-				case 'token.metrics.holders': {
-					updateCacheForTokenMetrics({ 
-						ctx, 
-						token: {
-							id: todo.subject 
-						},
-						metrics: {
-							holders: true
-						}
-					})
-					break
-				}
-				case 'token.metrics.supply': {
-					updateCacheForTokenMetrics({ 
-						ctx, 
-						token: {
-							id: todo.subject 
-						},
-						metrics: {
-							supply: true
-						}
-					})
-					break
-				}
-				case 'token.metrics.marketcap': {
-					updateCacheForTokenMetrics({ 
-						ctx, 
-						token: {
-							id: todo.subject 
-						},
-						metrics: {
-							marketcap: true
-						}
-					})
-					break
-				}
+			}catch(error){
+				log.warn(`cache update for token ${todo.subject} failed: ${error.stack || error.message || error}`)
 			}
 
 			ctx.db.cache.todos.deleteOne({
