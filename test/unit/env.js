@@ -18,7 +18,7 @@ export async function createContext({ debugQueries=false }={}){
 		}
 	}
 
-	log.config({ severity: 'error' })
+	log.config({ level: 'error' })
 
 	console.log(`using data dir: ${dataDir}`)
 

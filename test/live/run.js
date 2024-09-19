@@ -35,7 +35,7 @@ if(!cases.includes(component)){
 
 	
 log.config({ 
-	severity: args.log || 'debug',
+	level: args.log || 'debug',
 	dir: path.resolve(
 		path.join(__dirname, '..', '..')
 	)

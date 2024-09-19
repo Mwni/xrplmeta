@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { createPool } from '../../src/xrpl/nodepool.js'
 import log from '@mwni/log'
 
-log.config({ severity: 'error' })
+log.config({ level: 'error' })
 
 
 describe(
