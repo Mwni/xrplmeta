@@ -86,7 +86,7 @@ describe(
 		)
 
 		it(
-			'execute with one entry removed',
+			'execute with one account removed',
 			() => {
 				diffAccountsProps({
 					ctx,
@@ -97,9 +97,26 @@ describe(
 		)
 
 		it(
-			'should have removed the redacted props',
+			'should have removed the removed account\'s props',
 			() => {
 				expect(ctx.db.core.accountProps.readMany().length).to.be.equal(4)
+			}
+		)
+
+		it(
+			'should also remove specific removed props',
+			() => {
+				let accountsChanged = structuredClone(accounts)
+
+				delete accountsChanged[0].props.name
+
+				diffAccountsProps({
+					ctx,
+					accounts: accountsChanged,
+					source: 'test'
+				})
+
+				expect(ctx.db.core.accountProps.readMany().length).to.be.equal(5)
 			}
 		)
 	}
@@ -128,7 +145,7 @@ describe(
 		)
 
 		it(
-			'execute with one entry removed',
+			'execute with one token removed',
 			() => {
 				diffTokensProps({
 					ctx,
@@ -139,9 +156,26 @@ describe(
 		)
 
 		it(
-			'should have removed the redacted props',
+			'should have removed the removed token\'s props',
 			() => {
 				expect(ctx.db.core.tokenProps.readMany().length).to.be.equal(4)
+			}
+		)
+
+		it(
+			'should also remove specific removed props',
+			() => {
+				let tokensChanged = structuredClone(tokens)
+
+				delete tokensChanged[0].props.name
+
+				diffTokensProps({
+					ctx,
+					tokens: tokensChanged,
+					source: 'test'
+				})
+
+				expect(ctx.db.core.tokenProps.readMany().length).to.be.equal(5)
 			}
 		)
 
@@ -158,12 +192,13 @@ describe(
 				let props = ctx.db.cache.tokens.readMany()
 					.map(cache => reduceProps({ props: cache.tokenProps }))
 
-				expect(props).to.be.deep.equal(
-					tokens
-						.map(({ props }) => props)
-						.slice(0, 2)
-						.concat([{}])
-				)
+				let expectedProps = tokens
+					.map(({ props }) => props)
+					.slice(0, 3)
+
+				delete expectedProps[0].name
+
+				expect(props).to.be.deep.equal(expectedProps)
 			}
 		)
 	}

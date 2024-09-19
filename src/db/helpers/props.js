@@ -26,10 +26,13 @@ export function diffTokensProps({ ctx, tokens, source }){
 		where: {
 			NOT: {
 				OR: tokens.map(
-					({ currency, issuer }) => ({
+					({ currency, issuer, props }) => ({
 						token: {
 							currency,
 							issuer
+						},
+						key: {
+							in: Object.keys(props)
 						}
 					})
 				)
@@ -78,7 +81,8 @@ export function diffAccountsProps({ ctx, accounts, source }){
 
 	let accountIds = ctx.db.core.accounts.readMany({
 		select: {
-			id: true
+			id: true,
+			address: true
 		},
 		where: {
 			address: {
@@ -87,20 +91,28 @@ export function diffAccountsProps({ ctx, accounts, source }){
 				)
 			}
 		}
-	}).map(
-		({ id }) => id
-	)
+	})
 
 	let staleProps = ctx.db.core.accountProps.readMany({
 		where: {
 			NOT: {
-				account: {
-					id: {
-						in: accountIds
-					}
-				}
+				OR: accounts.map(
+					({ address, props }) => ({
+						account: {
+							id: accountIds
+								.find(account => account.address === address)
+								.id
+						},
+						key: {
+							in: Object.keys(props)
+						}
+					})
+				)
 			},
 			source
+		},
+		include: {
+			account: true
 		}
 	})
 
