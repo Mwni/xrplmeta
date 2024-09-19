@@ -1,7 +1,7 @@
 import log from '@mwni/log'
 import { scheduleGlobal, scheduleIterator } from '../schedule.js'
 import { createFetch } from '../../lib/fetch.js'
-import { diffAccountsProps, diffTokensProps, writeAccountProps } from '../../db/helpers/props.js'
+import { diffMultiAccountProps, diffMultiTokenProps, writeAccountProps } from '../../db/helpers/props.js'
 
 
 export default async function({ ctx }){
@@ -102,13 +102,13 @@ async function crawlAssets({ ctx, fetch, interval }){
 					}
 				}
 
-				diffAccountsProps({ 
+				diffMultiAccountProps({ 
 					ctx, 
 					accounts,
 					source: 'xumm/curated'
 				})
 
-				diffTokensProps({
+				diffMultiTokenProps({
 					ctx, 
 					tokens,
 					source: 'xumm/curated'

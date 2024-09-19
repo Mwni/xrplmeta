@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { createContext } from './env.js'
-import { diffAccountsProps, diffTokensProps } from '../../src/db/helpers/props.js'
+import { diffMultiAccountProps, diffMultiTokenProps } from '../../src/db/helpers/props.js'
 import { reduceProps } from '../../src/srv/procedures/token.js'
 import { updateCacheForTokenProps } from '../../src/cache/tokens.js'
 
@@ -70,7 +70,7 @@ describe(
 		it(
 			'execute with new data',
 			() => {
-				diffAccountsProps({
+				diffMultiAccountProps({
 					ctx,
 					accounts,
 					source: 'test'
@@ -88,7 +88,7 @@ describe(
 		it(
 			'execute with one account removed',
 			() => {
-				diffAccountsProps({
+				diffMultiAccountProps({
 					ctx,
 					accounts: accounts.slice(0, 2),
 					source: 'test'
@@ -110,7 +110,7 @@ describe(
 
 				delete accountsChanged[0].props.name
 
-				diffAccountsProps({
+				diffMultiAccountProps({
 					ctx,
 					accounts: accountsChanged,
 					source: 'test'
@@ -129,7 +129,7 @@ describe(
 		it(
 			'execute with new data',
 			() => {
-				diffTokensProps({
+				diffMultiTokenProps({
 					ctx,
 					tokens,
 					source: 'test'
@@ -147,7 +147,7 @@ describe(
 		it(
 			'execute with one token removed',
 			() => {
-				diffTokensProps({
+				diffMultiTokenProps({
 					ctx,
 					tokens: tokens.slice(0, 2),
 					source: 'test'
@@ -169,7 +169,7 @@ describe(
 
 				delete tokensChanged[0].props.name
 
-				diffTokensProps({
+				diffMultiTokenProps({
 					ctx,
 					tokens: tokensChanged,
 					source: 'test'

@@ -9,7 +9,7 @@ import {
 
 
 
-export function diffTokensProps({ ctx, tokens, source }){
+export function diffMultiTokenProps({ ctx, tokens, source }){
 	let propIds = []
 
 	for(let { currency, issuer, props } of tokens){
@@ -24,7 +24,7 @@ export function diffTokensProps({ ctx, tokens, source }){
 		})
 
 		for(let key of Object.keys(props)){
-			let { id } = ctx.db.core.tokenProps.readOne({
+			let prop = ctx.db.core.tokenProps.readOne({
 				where: {
 					token: {
 						currency,
@@ -35,7 +35,8 @@ export function diffTokensProps({ ctx, tokens, source }){
 				}
 			})
 
-			propIds.push(id)
+			if(prop)
+				propIds.push(prop.id)
 		}
 	}
 
@@ -76,7 +77,7 @@ export function diffTokensProps({ ctx, tokens, source }){
 	}
 }
 
-export function diffAccountsProps({ ctx, accounts, source }){
+export function diffMultiAccountProps({ ctx, accounts, source }){
 	let propIds = []
 
 	for(let { address, props } of accounts){
@@ -90,7 +91,7 @@ export function diffAccountsProps({ ctx, accounts, source }){
 		})
 
 		for(let key of Object.keys(props)){
-			let { id } = ctx.db.core.accountProps.readOne({
+			let prop = ctx.db.core.accountProps.readOne({
 				where: {
 					account: {
 						address
@@ -100,7 +101,8 @@ export function diffAccountsProps({ ctx, accounts, source }){
 				}
 			})
 
-			propIds.push(id)
+			if(prop)
+				propIds.push(prop.id)
 		}
 	}
 

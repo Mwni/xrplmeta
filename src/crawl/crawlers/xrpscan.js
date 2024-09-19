@@ -1,7 +1,7 @@
 import log from '@mwni/log'
 import { scheduleGlobal } from '../schedule.js'
 import { createFetch } from '../../lib/fetch.js'
-import { diffAccountsProps } from '../../db/helpers/props.js'
+import { diffMultiAccountProps } from '../../db/helpers/props.js'
 
 
 export default async function({ ctx }){
@@ -48,7 +48,7 @@ export default async function({ ctx }){
 					})
 				}
 
-				diffAccountsProps({
+				diffMultiAccountProps({
 					ctx,
 					accounts,
 					source: 'xrpscan/well-known'

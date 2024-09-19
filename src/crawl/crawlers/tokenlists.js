@@ -2,7 +2,7 @@ import log from '@mwni/log'
 import { parse as parseXLS26 } from '@xrplkit/xls26'
 import { scheduleGlobal } from '../schedule.js'
 import { createFetch } from '../../lib/fetch.js'
-import { diffAccountsProps, diffTokensProps } from '../../db/helpers/props.js'
+import { diffMultiAccountProps, diffMultiTokenProps } from '../../db/helpers/props.js'
 import { currencyUTF8ToHex } from '@xrplkit/tokens'
 
 
@@ -103,13 +103,13 @@ async function crawlList({ ctx, id, url, fetchInterval = 600, trustLevel = 0, ig
 					}
 				}
 				
-				diffAccountsProps({
+				diffMultiAccountProps({
 					ctx,
 					accounts,
 					source: `tokenlist/${id}`
 				})
 
-				diffTokensProps({
+				diffMultiTokenProps({
 					ctx,
 					tokens,
 					source: `tokenlist/${id}`

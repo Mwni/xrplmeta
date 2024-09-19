@@ -1,7 +1,7 @@
 import log from '@mwni/log'
 import { scheduleGlobal } from '../schedule.js'
 import { createFetch } from '../../lib/fetch.js'
-import { diffTokensProps } from '../../db/helpers/props.js'
+import { diffMultiTokenProps } from '../../db/helpers/props.js'
 
 
 export default async function({ ctx }){
@@ -47,7 +47,7 @@ export default async function({ ctx }){
 					}
 				}
 
-				diffTokensProps({
+				diffMultiTokenProps({
 					ctx,
 					tokens,
 					source: 'xrplf/self-assessment'
