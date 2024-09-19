@@ -10,6 +10,8 @@ import {
 
 
 export function diffTokensProps({ ctx, tokens, source }){
+	let propIds = []
+
 	for(let { currency, issuer, props } of tokens){
 		writeTokenProps({
 			ctx,
@@ -20,22 +22,29 @@ export function diffTokensProps({ ctx, tokens, source }){
 			props,
 			source
 		})
+
+		for(let key of Object.keys(props)){
+			let { id } = ctx.db.core.tokenProps.readOne({
+				where: {
+					token: {
+						currency,
+						issuer
+					},
+					key,
+					source
+				}
+			})
+
+			propIds.push(id)
+		}
 	}
 
 	let staleProps = ctx.db.core.tokenProps.readMany({
 		where: {
 			NOT: {
-				OR: tokens.map(
-					({ currency, issuer, props }) => ({
-						token: {
-							currency,
-							issuer
-						},
-						key: {
-							in: Object.keys(props)
-						}
-					})
-				)
+				id: {
+					in: propIds
+				}
 			},
 			source
 		},
@@ -68,6 +77,8 @@ export function diffTokensProps({ ctx, tokens, source }){
 }
 
 export function diffAccountsProps({ ctx, accounts, source }){
+	let propIds = []
+
 	for(let { address, props } of accounts){
 		writeAccountProps({
 			ctx,
@@ -77,37 +88,28 @@ export function diffAccountsProps({ ctx, accounts, source }){
 			props,
 			source
 		})
-	}
 
-	let accountIds = ctx.db.core.accounts.readMany({
-		select: {
-			id: true,
-			address: true
-		},
-		where: {
-			address: {
-				in: accounts.map(
-					({ address }) => address
-				)
-			}
+		for(let key of Object.keys(props)){
+			let { id } = ctx.db.core.accountProps.readOne({
+				where: {
+					account: {
+						address
+					},
+					key,
+					source
+				}
+			})
+
+			propIds.push(id)
 		}
-	})
+	}
 
 	let staleProps = ctx.db.core.accountProps.readMany({
 		where: {
 			NOT: {
-				OR: accounts.map(
-					({ address, props }) => ({
-						account: {
-							id: accountIds
-								.find(account => account.address === address)
-								.id
-						},
-						key: {
-							in: Object.keys(props)
-						}
-					})
-				)
+				id: {
+					in: propIds
+				}
 			},
 			source
 		},
