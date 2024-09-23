@@ -1,19 +1,21 @@
 import { XFL, sum, div, gt } from '@xrplkit/xfl'
 
+const dustValueXRP = '0.0001'
 
-export function readTokenExchangesAligned({ ctx, base, quote, sequenceStart, sequenceEnd, limit, newestFirst, include }){
+export function readTokenExchangesAligned({ 
+	ctx, 
+	base, 
+	quote, 
+	sequenceStart,
+	sequenceEnd, 
+	limit, 
+	newestFirst, 
+	include, 
+	skipDust 
+}){
 	return ctx.db.core.tokenExchanges.readMany({
 		where: {
-			OR: [
-				{
-					takerPaidToken: base,
-					takerGotToken: quote
-				},
-				{
-					takerPaidToken: quote,
-					takerGotToken: base
-				}
-			],
+			...composeBaseQuoteWhere({ base, quote, skipDust }),
 			AND: [
 				{
 					ledgerSequence: {
@@ -44,19 +46,10 @@ export function readTokenExchangesAligned({ ctx, base, quote, sequenceStart, seq
 		.map(exchange => alignTokenExchange({ exchange, base, quote }))
 }
 
-export function readTokenExchangeAligned({ ctx, base, quote, ledgerSequence }){
+export function readTokenExchangeAligned({ ctx, base, quote, ledgerSequence, skipDust }){
 	let exchange = ctx.db.core.tokenExchanges.readOne({
 		where: {
-			OR: [
-				{
-					takerPaidToken: base,
-					takerGotToken: quote
-				},
-				{
-					takerPaidToken: quote,
-					takerGotToken: base
-				}
-			],
+			...composeBaseQuoteWhere({ base, quote, skipDust }),
 			ledgerSequence: {
 				lessOrEqual: ledgerSequence
 			}
@@ -374,4 +367,40 @@ export function readTokenExchangeIntervalSeries({ ctx, base, quote, sequence, ti
 			}
 		}
 	)
+}
+
+function composeBaseQuoteWhere({ base, quote, skipDust }){
+	let takerGotBaseCondition = {
+		takerPaidToken: quote,
+		takerGotToken: base
+	}
+
+	let takerGotQuoteCondition = {
+		takerPaidToken: base,
+		takerGotToken: quote
+	}
+
+	if(skipDust){
+		if(base.currency === 'XRP'){
+			takerGotBaseCondition.takerGotValue = {
+				greaterOrEqual: dustValueXRP
+			}
+
+			takerGotQuoteCondition.takerPaidValue = {
+				greaterOrEqual: dustValueXRP
+			}
+		}else if(quote.currency === 'XRP'){
+			takerGotBaseCondition.takerPaidValue = {
+				greaterOrEqual: dustValueXRP
+			}
+
+			takerGotQuoteCondition.takerGotValue = {
+				greaterOrEqual: dustValueXRP
+			}
+		}
+	}
+	
+	return {
+		OR: [takerGotBaseCondition, takerGotQuoteCondition]
+	}
 }
