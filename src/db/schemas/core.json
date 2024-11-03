@@ -278,7 +278,9 @@
 						"AMMVote",
 						"AMMWithdraw",
 						"DIDSet",
-						"DIDDelete"
+						"DIDDelete",
+						"OracleSet",
+						"OracleDelete"
 					]
 				},
 				"count": {
