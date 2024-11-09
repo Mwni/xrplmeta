@@ -9,6 +9,9 @@ import { currencyUTF8ToHex } from '@xrplkit/tokens'
 import { reduceProps } from '../../srv/procedures/token.js'
 
 
+const tomlStandardPath = '.well-known/xrp-ledger.toml'
+
+
 export default async function({ ctx }){
 	let config = ctx.config.source.issuerdomain
 
@@ -45,47 +48,18 @@ export default async function({ ctx }){
 				})
 
 				if(domain){
-					let { protocol, host, pathname } = parseURL(domain)
-
-					if(!protocol)
-						protocol = 'http:'
-
-					if(protocol !== 'http:' && protocol !== 'https:'){
-						log.debug(`issuer (${address}) has unsupported protocol: ${domain}`)
-						return
-					}
-
-					if(!host)
-						host = ''
-
-					if(!pathname)
-						pathname = ''
-
-					let tomlUrl = sanitizeURL(
-						`${protocol}//${host}${pathname}/.well-known/xrp-ledger.toml`
-					)
-
 					try{
-						log.debug(`issuer (${address}) fetching: ${tomlUrl}`)
-
-						let { status, data } = await fetch(tomlUrl)
-
+						var xls26 = await fetchToml({ domain, fetch })
+					}catch(error){
+						log.debug(`issuer (${address}): ${error.message}`)
+						return
+					}finally{
 						log.accumulate.info({
 							text: [`%xrplTomlLookups xrp-ledger.toml lookups in %time`],
 							data: {
 								xrplTomlLookups: 1
 							}
 						})
-						
-						if(status !== 200){
-							log.debug(`issuer (${address}) HTTP ${status}: ${tomlUrl}`)
-							return
-						}
-		
-						var xls26 = parseXLS26(data)
-					}catch(error){
-						log.debug(`issuer (${address}) ${tomlUrl}: ${error.message}`)
-						return
 					}
 
 					let publishedIssuers = 0
@@ -162,5 +136,42 @@ export default async function({ ctx }){
 				}
 			}
 		})
+	}
+}
+
+export async function fetchToml({ domain, fetch }){
+	let { protocol, host, pathname } = parseURL(domain)
+
+	if(protocol && protocol !== 'https:' && protocol !== 'http:')
+		throw new Error(`unsupported protocol: ${domain}`)
+
+	if(!host)
+		host = ''
+
+	if(!pathname)
+		pathname = ''
+
+	let tomlUrls = (protocol ? [protocol] : ['https:', 'http:'])
+		.map(protocol => `${protocol}//${host}${pathname}/${tomlStandardPath}`)
+		.map(sanitizeURL)
+
+	for(let tomlUrl of tomlUrls){
+		log.debug(`fetching ${tomlUrl}`)
+
+		try{
+			let { status, data } = await fetch(tomlUrl)
+
+			if(status !== 200)
+				throw new Error(`HTTP ${status}`)
+
+			return parseXLS26(data)
+		}catch(error){
+			if(tomlUrl === tomlUrls.at(-1))
+				throw new Error(
+					error.message.includes(tomlUrl)
+						? error.message
+						: `${tomlUrl} -> ${error.message}`
+				)
+		}
 	}
 }
