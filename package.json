@@ -1,6 +1,6 @@
 {
 	"name": "xrplmeta",
-	"version": "2.9.5-alpha",
+	"version": "2.10.0-alpha",
 	"type": "module",
 	"bin": {
 		"xrplmeta": "./src/run.js"
@@ -29,7 +29,7 @@
 		"koa-easy-ws": "2.1.0",
 		"koa-json": "2.0.2",
 		"koa-send": "5.0.1",
-		"better-sqlite3": "11.3.0",
+		"better-sqlite3": "11.5.0",
 		"limiter": "2.0.1",
 		"node-abort-controller": "3.1.1",
 		"node-fetch": "3.3.2",
