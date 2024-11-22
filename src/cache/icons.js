@@ -128,6 +128,8 @@ export async function updateIconCacheFor({ ctx, token, account }){
 
 				continue
 			}
+		}else{
+			log.debug(`icon ${url} not yet due for renewal`)
 		}
 
 		for(let token of targetTokens){
@@ -209,6 +211,8 @@ function linkCachedIconToTokenCache({ ctx, token, cachedIcon }){
 			}
 		})
 	}
+
+	log.debug(`linked cached icon ${cachedIcon.url} -> ${cachedIcon.hash}.${cachedIcon.fileType} to token ${token.id}`)
 }
 
 function unlinkCachedIconFromTokenCache({ ctx, token, url }){
@@ -229,6 +233,8 @@ function unlinkCachedIconFromTokenCache({ ctx, token, url }){
 			id: tokenCache.id
 		}
 	})
+
+	log.debug(`unlinked cached icon ${url} from token ${token.id}`)
 }
 
 async function downloadAndProcessIcon({ ctx, url }){
