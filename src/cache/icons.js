@@ -93,7 +93,7 @@ export async function updateIconCacheFor({ ctx, token, account }){
 				icon: cache,
 				...user
 			}
-		})
+		}) 
 
 		let lifetime = cache.error
 			? 60 * 10
@@ -125,6 +125,8 @@ export async function updateIconCacheFor({ ctx, token, account }){
 						id: cache.id
 					}
 				})
+
+				continue
 			}
 		}
 
