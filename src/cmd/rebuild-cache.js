@@ -19,20 +19,38 @@ export default async function({ config, args }){
 		})
 	}
 
-	const tokens = ctx.db.core.tokens.readMany()
+	let tokens
 
-	if(args.clean){
-		log.time.info(`cache.wipe`, `wiping current cache`)
-		ctx.db.cache.tokens.deleteMany()
-		ctx.db.cache.icons.deleteMany()
-		ctx.db.cache.iconUsers.deleteMany()
-		ctx.db.cache.todos.deleteMany()
-		log.time.info(`cache.wipe`, `wiped cache in %`)
+	if(args.token){
+		let [currency, issuer] = args.token.split(':')
+
+		tokens = [ctx.db.core.tokens.readOne({
+			where: {
+				currency,
+				issuer: {
+					address: issuer
+				}
+			}
+		})]
+
+		if(!tokens[0])
+			throw new Error(`token "${args.token}" not found`)
+	}else{
+		tokens = ctx.db.core.tokens.readMany().slice(1) // first is XRP
+
+		if(args.clean){
+			log.time.info(`cache.wipe`, `wiping current cache`)
+			ctx.db.cache.tokens.deleteMany()
+			ctx.db.cache.icons.deleteMany()
+			ctx.db.cache.iconUsers.deleteMany()
+			ctx.db.cache.todos.deleteMany()
+			log.time.info(`cache.wipe`, `wiped cache in %`)
+		}
 	}
 
-	log.time.info(`cache.tokens`, `rebuilding for`, tokens.length, `tokens`)
+	log.time.info(`cache.tokens`, `rebuilding for`, tokens.length, `token(s)`)
 
-	for(let i=1; i<tokens.length; i++){
+	for(let i=0; i<tokens.length; i++){
 		let token = tokens[i]
 
 		updateCacheForTokenProps({ ctx, token })
@@ -49,12 +67,12 @@ export default async function({ config, args }){
 			}
 		})
 
-		updateIconCacheFor({
+		await updateIconCacheFor({
 			ctx,
 			account: token.issuer
 		})
 
-		updateIconCacheFor({
+		await updateIconCacheFor({
 			ctx,
 			token
 		})
@@ -65,5 +83,5 @@ export default async function({ config, args }){
 		})
 	}
 
-	log.time.info(`cache.tokens`, `rebuilt entire token cache in %`)
+	log.time.info(`cache.tokens`, `rebuilt token cache in %`)
 }
