@@ -1,5 +1,6 @@
 import log from '@mwni/log'
 import { openDB } from '../db/index.js'
+import { updateIconCacheFor } from '../cache/icons.js'
 import { 
 	updateCacheForTokenProps,
 	updateCacheForAccountProps,
@@ -23,6 +24,9 @@ export default async function({ config, args }){
 	if(args.clean){
 		log.time.info(`cache.wipe`, `wiping current cache`)
 		ctx.db.cache.tokens.deleteMany()
+		ctx.db.cache.icons.deleteMany()
+		ctx.db.cache.iconUsers.deleteMany()
+		ctx.db.cache.todos.deleteMany()
 		log.time.info(`cache.wipe`, `wiped cache in %`)
 	}
 
@@ -43,6 +47,16 @@ export default async function({ config, args }){
 				supply: true,
 				marketcap: true
 			}
+		})
+
+		updateIconCacheFor({
+			ctx,
+			account: token.issuer
+		})
+
+		updateIconCacheFor({
+			ctx,
+			token
 		})
 
 		log.accumulate.info({
