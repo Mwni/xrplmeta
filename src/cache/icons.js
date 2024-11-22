@@ -275,11 +275,17 @@ function deleteIcon({ ctx, url }){
 		}
 	})
 
-	fs.rmSync(getCachedIconPath({ ctx, ...icon }))
+	fs.rmSync(
+		getCachedIconPath({ ctx, ...icon }),
+		{ force: true }
+	)
 
 	if(icon.fileType !== 'svg'){
 		for(let size of iconSizes){
-			fs.rmSync(getCachedIconPath({ ctx, ...icon, suffix: `@${size}` }))
+			fs.rmSync(
+				getCachedIconPath({ ctx, ...icon, suffix: `@${size}` }),
+				{ force: true }
+			)
 		}
 	}
 
